@@ -112,3 +112,16 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# mac setup file
+.DS_Store
+
+# windows setup file
+.ini
+
+# IDE file
+.vscode
+.idea
+
+# model file
+.ckpt
