@@ -16,14 +16,13 @@
 # Import and configure modules
 import time
 import tensorflow as tf
-import cv2
 
 import matplotlib.pyplot as plt
 
 # Download images and choose a style image and a content image:
 content_path = './turtle.jpg'
 
-style_path = 'kandinsky.jpg'
+style_path = './kandinsky.jpg'
 
 
 # Visualize the input
@@ -55,6 +54,7 @@ def load_img(path_to_img):
     return img
 
 
+# Load the image to be processed
 content_image = load_img(content_path)
 style_image = load_img(style_path)
 
@@ -77,9 +77,6 @@ def imshow(img, title=None):
 
 def print_top_5():
     """ Print out the five possible object categories identified by the model.
-
-    Returns:
-
     """
 
     # Define content and style representations
@@ -123,6 +120,13 @@ num_style_layers = len(style_layers)
 # build the model
 def vgg_layers(layer_names):
     """ Creates a vgg model that returns a list of intermediate output values.
+
+    Args:
+        layer_names: The name of each neuron layer.
+
+    Returns:
+        tf.keras.Model(**kawgs).
+
     """
     # Load our model. Load pretrained VGG, trained on imagenet data
     vgg = tf.keras.applications.VGG19(include_top=False, weights='imagenet')
@@ -141,6 +145,15 @@ style_outputs = style_extractor(style_image * 255)
 
 # Calculate style
 def gram_matrix(input_tensor):
+    """ The content of an image is represented by the values of the intermediate feature maps.
+
+    Args:
+        input_tensor: Input tensor stream.
+
+    Returns:
+        Take the average of the cross product.
+
+    """
     result = tf.linalg.einsum('bijc,bijd->bcd', input_tensor, input_tensor)
     input_shape = tf.shape(input_tensor)
     num_locations = tf.cast(input_shape[1] * input_shape[2], tf.float32)
@@ -254,11 +267,9 @@ def train_step(img):
         img.assign(clip_0_1(img))
 
 
-def train():
+def train(epochs, steps_per_epoch):
     img = tf.Variable(content_image)
     start = time.time()
-    epochs = 10
-    steps_per_epoch = 100
 
     step = 0
     for n in range(epochs):
@@ -274,4 +285,8 @@ def train():
     print("Total time: {:.1f}".format(end - start))
 
     file_name = 'kadinsky-turtle.png'
-    cv2.imwrite(file_name, img[0])
+    plt.imsave(file_name, img[0])
+
+
+if __name__ == '__main__':
+    train(epochs=10, steps_per_epoch=100)
