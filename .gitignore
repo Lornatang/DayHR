@@ -125,3 +125,7 @@ dmypy.json
 
 # model file
 .ckpt
+
+# img file
+*.jpg
+*.png
