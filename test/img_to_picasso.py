@@ -84,7 +84,7 @@ def print_top_5():
     x = tf.keras.applications.vgg19.preprocess_input(content_image * 255)
     x = tf.image.resize(x, (224, 224))
     # step 2: Load the pretraining model.
-    model = tf.keras.applications.VGG19(include_top=True, weights='imagenet')
+    model = tf.keras.applications.VGG19(include_top=True, weights=None)
     # step 3: Classify the possible categories of images.
     prediction_probabilities = model(x)
 
@@ -98,7 +98,7 @@ def print_top_5():
 
 
 # Now load a VGG19 without the classification head, and list the layer names
-vgg = tf.keras.applications.VGG19(include_top=False, weights='imagenet')
+vgg = tf.keras.applications.VGG19(include_top=False, weights=None)
 
 
 # Choose intermediate layers from the network to represent the
@@ -129,7 +129,7 @@ def vgg_layers(layer_names):
 
     """
     # Load our model. Load pretrained VGG, trained on imagenet data
-    vgg = tf.keras.applications.VGG19(include_top=False, weights='imagenet')
+    vgg = tf.keras.applications.VGG19(include_top=False, weights=None)
     vgg.trainable = False
 
     outputs = [vgg.get_layer(names).output for names in layer_names]
