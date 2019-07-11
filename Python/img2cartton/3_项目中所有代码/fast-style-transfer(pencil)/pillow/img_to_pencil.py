@@ -15,7 +15,7 @@
 
 from PIL import Image, ImageFilter, ImageOps
 
-img = Image.open('../imgs/0.jpg')
+img = Image.open('./imgs/0.jpg')
 
 
 def dodge(a, b, alpha):
@@ -35,7 +35,7 @@ def draw(img, blur=25, alpha=1.0):
             b = img2.getpixel((x, y))
             img1.putpixel((x, y), dodge(a, b, alpha))
     img1.show()
-    img1.save('../result/pencil_0.jpg')
+    img1.save('./result/pencil_0.jpg')
 
 
 draw(img)
