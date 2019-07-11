@@ -1,11 +1,14 @@
 from __future__ import print_function
-import sys, os, pdb
-sys.path.insert(0, 'src')
-import numpy as np, scipy.misc 
-from optimize import optimize
-from argparse import ArgumentParser
-from utils import save_img, get_img, exists, list_files
+import scipy.misc
+import numpy as np
 import evaluate
+from utils import save_img, get_img, exists, list_files
+from argparse import ArgumentParser
+from optimize import optimize
+import sys
+import os
+import pdb
+sys.path.insert(0, 'src')
 
 CONTENT_WEIGHT = 7.5e0
 STYLE_WEIGHT = 1e2
@@ -21,19 +24,28 @@ BATCH_SIZE = 4
 DEVICE = '/gpu:0'
 FRAC_GPU = 1
 
+
 def build_parser():
     parser = ArgumentParser()
-    parser.add_argument('--checkpoint-dir', type=str,
-                        dest='checkpoint_dir', help='dir to save checkpoint in',
-                        metavar='CHECKPOINT_DIR', required=True)
+    parser.add_argument(
+        '--checkpoint-dir',
+        type=str,
+        dest='checkpoint_dir',
+        help='dir to save checkpoint in',
+        metavar='CHECKPOINT_DIR',
+        required=True)
 
     parser.add_argument('--style', type=str,
                         dest='style', help='style image path',
                         metavar='STYLE', required=True)
 
-    parser.add_argument('--train-path', type=str,
-                        dest='train_path', help='path to training images folder',
-                        metavar='TRAIN_PATH', default=TRAIN_PATH)
+    parser.add_argument(
+        '--train-path',
+        type=str,
+        dest='train_path',
+        help='path to training images folder',
+        metavar='TRAIN_PATH',
+        default=TRAIN_PATH)
 
     parser.add_argument('--test', type=str,
                         dest='test', help='test image path',
@@ -55,10 +67,13 @@ def build_parser():
                         dest='batch_size', help='batch size',
                         metavar='BATCH_SIZE', default=BATCH_SIZE)
 
-    parser.add_argument('--checkpoint-iterations', type=int,
-                        dest='checkpoint_iterations', help='checkpoint frequency',
-                        metavar='CHECKPOINT_ITERATIONS',
-                        default=CHECKPOINT_ITERATIONS)
+    parser.add_argument(
+        '--checkpoint-iterations',
+        type=int,
+        dest='checkpoint_iterations',
+        help='checkpoint frequency',
+        metavar='CHECKPOINT_ITERATIONS',
+        default=CHECKPOINT_ITERATIONS)
 
     parser.add_argument('--vgg-path', type=str,
                         dest='vgg_path',
@@ -69,23 +84,27 @@ def build_parser():
                         dest='content_weight',
                         help='content weight (default %(default)s)',
                         metavar='CONTENT_WEIGHT', default=CONTENT_WEIGHT)
-    
+
     parser.add_argument('--style-weight', type=float,
                         dest='style_weight',
                         help='style weight (default %(default)s)',
                         metavar='STYLE_WEIGHT', default=STYLE_WEIGHT)
 
-    parser.add_argument('--tv-weight', type=float,
-                        dest='tv_weight',
-                        help='total variation regularization weight (default %(default)s)',
-                        metavar='TV_WEIGHT', default=TV_WEIGHT)
-    
+    parser.add_argument(
+        '--tv-weight',
+        type=float,
+        dest='tv_weight',
+        help='total variation regularization weight (default %(default)s)',
+        metavar='TV_WEIGHT',
+        default=TV_WEIGHT)
+
     parser.add_argument('--learning-rate', type=float,
                         dest='learning_rate',
                         help='learning rate (default %(default)s)',
                         metavar='LEARNING_RATE', default=LEARNING_RATE)
 
     return parser
+
 
 def check_opts(opts):
     exists(opts.checkpoint_dir, "checkpoint dir not found!")
@@ -104,11 +123,12 @@ def check_opts(opts):
     assert opts.tv_weight >= 0
     assert opts.learning_rate >= 0
 
+
 def _get_files(img_dir):
     files = list_files(img_dir)
-    return [os.path.join(img_dir,x) for x in files]
+    return [os.path.join(img_dir, x) for x in files]
 
-    
+
 def main():
     parser = build_parser()
     options = parser.parse_args()
@@ -121,12 +141,12 @@ def main():
         content_targets = [options.test]
 
     kwargs = {
-        "slow":options.slow,
-        "epochs":options.epochs,
-        "print_iterations":options.checkpoint_iterations,
-        "batch_size":options.batch_size,
-        "save_path":os.path.join(options.checkpoint_dir,'fns.ckpt'),
-        "learning_rate":options.learning_rate
+        "slow": options.slow,
+        "epochs": options.epochs,
+        "print_iterations": options.checkpoint_iterations,
+        "batch_size": options.batch_size,
+        "save_path": os.path.join(options.checkpoint_dir, 'fns.ckpt'),
+        "learning_rate": options.learning_rate
     }
 
     if options.slow:
@@ -151,17 +171,18 @@ def main():
         to_print = (style_loss, content_loss, tv_loss)
         print('style: %s, content:%s, tv: %s' % to_print)
         if options.test:
-            assert options.test_dir != False
-            preds_path = '%s/%s_%s.png' % (options.test_dir,epoch,i)
+            assert options.test_dir
+            preds_path = '%s/%s_%s.png' % (options.test_dir, epoch, i)
             if not options.slow:
                 ckpt_dir = os.path.dirname(options.checkpoint_dir)
-                evaluate.ffwd_to_img(options.test,preds_path,
+                evaluate.ffwd_to_img(options.test, preds_path,
                                      options.checkpoint_dir)
             else:
                 save_img(preds_path, img)
     ckpt_dir = options.checkpoint_dir
     cmd_text = 'python evaluate.py --checkpoint %s ...' % ckpt_dir
     print("Training complete. For evaluation:\n    `%s`" % cmd_text)
+
 
 if __name__ == '__main__':
     main()
