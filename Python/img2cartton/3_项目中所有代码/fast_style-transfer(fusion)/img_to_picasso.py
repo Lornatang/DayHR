@@ -176,12 +176,6 @@ class StyleContentModel(tf.keras.models.Model):
         self.vgg.trainable = False
 
     def call(self, inputs, **kwargs):
-        """ Expects float input in [0,1]
-
-        Args:
-            inputs:
-            **kwargs:
-        """
         inputs = inputs * 255.0
         preprocessed_input = tf.keras.applications.vgg19.preprocess_input(
             inputs)
@@ -217,6 +211,19 @@ image = tf.Variable(content_image)
 
 
 def clip_0_1(img):
+    """ Clips tensor values to a specified min and max.
+
+    Args:
+        img: input imgs tensor.
+
+    Returns:
+        A clipped Tensor or IndexedSlices.
+
+    Raises:
+        ValueError: If the clip tensors would trigger array broadcasting
+                    that would make the returned tensor larger than the input.
+
+    """
     return tf.clip_by_value(img, clip_value_min=0.0, clip_value_max=1.0)
 
 
@@ -280,7 +287,6 @@ def train(epochs, steps_per_epoch):
         for m in range(steps_per_epoch):
             step += 1
             train_step(img)
-            print(".", end='')
         imshow(img.read_value())
         plt.title("Train step: {}".format(step))
         plt.show()
