@@ -1,11 +1,9 @@
-# Copyright (c) 2015-2016 Anish Athalye. Released under GPLv3.
-
 import tensorflow as tf
 import numpy as np
 import scipy.io
-import pdb
 
-MEAN_PIXEL = np.array([ 123.68 ,  116.779,  103.939])
+MEAN_PIXEL = np.array([123.68, 116.779, 103.939])
+
 
 def net(data_path, input_image):
     layers = (
@@ -24,8 +22,6 @@ def net(data_path, input_image):
     )
 
     data = scipy.io.loadmat(data_path)
-    mean = data['normalization'][0][0][0]
-    mean_pixel = np.mean(mean, axis=(0, 1))
     weights = data['layers'][0]
 
     net = {}
@@ -35,7 +31,8 @@ def net(data_path, input_image):
         if kind == 'conv':
             kernels, bias = weights[i][0][0][0][0]
             # matconvnet: weights are [width, height, in_channels, out_channels]
-            # tensorflow: weights are [height, width, in_channels, out_channels]
+            # tensorflow: weights are [height, width, in_channels,
+            # out_channels]
             kernels = np.transpose(kernels, (1, 0, 2, 3))
             bias = bias.reshape(-1)
             current = _conv_layer(current, kernels, bias)
@@ -49,15 +46,15 @@ def net(data_path, input_image):
     return net
 
 
-def _conv_layer(input, weights, bias):
-    conv = tf.nn.conv2d(input, tf.constant(weights), strides=(1, 1, 1, 1),
-            padding='SAME')
+def _conv_layer(inputs, weights, bias):
+    conv = tf.nn.conv2d(inputs, tf.constant(weights), strides=(1, 1, 1, 1),
+                        padding='SAME')
     return tf.nn.bias_add(conv, bias)
 
 
-def _pool_layer(input):
-    return tf.nn.max_pool(input, ksize=(1, 2, 2, 1), strides=(1, 2, 2, 1),
-            padding='SAME')
+def _pool_layer(inputs):
+    return tf.nn.max_pool(inputs, ksize=(1, 2, 2, 1), strides=(1, 2, 2, 1),
+                          padding='SAME')
 
 
 def preprocess(image):
