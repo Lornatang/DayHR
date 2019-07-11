@@ -20,12 +20,12 @@ import scipy.io
 MEAN_PIXEL = np.array([125.555, 125.555, 125.555])
 
 
-def build(data_to_path, image):
+def build(data_to_path, inputs):
     """ Create VGG based neural unit model
 
     Args:
         data_to_path: Data set file path.
-        image: input image tensor.
+        inputs: input image tensor.
 
     Returns:
         The generated model file.
@@ -63,31 +63,31 @@ def build(data_to_path, image):
             # Similar to the deconvolution of TensorFlow.
             kernels = np.transpose(kernels, (1, 0, 2, 3))
             bias = bias.reshape(-1)
-            image = _conv_layer(image, kernels, bias)
+            inputs = _conv_ops(inputs, kernels, bias)
 
         elif layer_name == 'relu':
             # np.maximum(0, image)
-            image = _relu_layer(image)
+            inputs = _relu_ops(inputs)
 
         elif layer_name == 'pool':
-            image = _pool_layer(image)
+            inputs = _pool_ops(inputs)
 
-        model[layer] = image
+        model[layer] = inputs
 
     assert len(model) == len(layers)
     return model
 
 
-def _conv_layer(inputs, weights, bias):
-    """ Neural convolution
+def _conv_ops(inputs, weights, bias):
+    """ Neural convolution.
 
     Args:
         inputs: Input image tensor.
-        weights: The weight of the nerve layer.
-        bias: The size of the deviation of the nerve layer.
+        weights: The weight of the neural layer.
+        bias: The size of the deviation of the neural layer.
 
     Returns:
-
+        The sum of the convolution and the deviation.
     """
     conv = tf.nn.conv2d(inputs, tf.constant(weights),
                         strides=(1, 1, 1, 1),
@@ -95,19 +95,51 @@ def _conv_layer(inputs, weights, bias):
     return tf.nn.bias_add(conv, bias)
 
 
-def _relu_layer(inputs):
+def _relu_ops(inputs):
+    """ Neural relu.
+
+    Args:
+        inputs: Input image tensor.
+
+    Returns:
+        Output a value greater than or equal to 0.
+    """
     return np.maximum(0, inputs)
 
 
-def _pool_layer(inputs):
+def _pool_ops(inputs):
+    """ Neural max pool.
+
+    Args:
+        inputs: Input image tensor.
+
+    Returns:
+        Output a maximum pooled kernel value of 2.
+    """
     return tf.nn.max_pool(inputs, (1, 2, 2, 1),
                           strides=(1, 2, 2, 1),
                           padding='SAME')
 
 
 def preprocess(image):
+    """ Preprocessing picture.
+
+    Args:
+        image: Input image tensor.
+
+    Returns:
+        The trichromatic value after normalization.
+    """
     return image - MEAN_PIXEL
 
 
 def unprocess(image):
+    """ Reverse processing pictures.
+
+    Args:
+        image: Input image tensor.
+
+    Returns:
+        After the inverse normalization.
+    """
     return image + MEAN_PIXEL
