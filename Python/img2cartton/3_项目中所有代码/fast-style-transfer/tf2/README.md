@@ -3,26 +3,26 @@
 The reference papers [A Neural Algorithm of Artistic Style](https://arxiv.org/abs/1508.06576)
 
 ## Image Stylization
-We added styles from various paintings to a photo of Chicago. Click on thumbnails to see full applied style images.
+We added styles from various paintings to a photo of People. Click on thumbnails to see full applied style images.
 <div align='center'>
-<img src = 'examples/content/chicago.jpg' height="200px">
+<img src = 'examples/content/people.jpg' height="200px">
 </div>
      
 <div align = 'center'>
 <a href = 'examples/style/wave.jpg'><img src = 'examples/thumbs/wave.jpg' height = '200px'></a>
-<img src = 'examples/results/chicago_wave.jpg' height = '200px'>
-<img src = 'examples/results/chicago_udnie.jpg' height = '200px'>
+<img src = 'examples/results/people_wave.jpg' height = '200px'>
+<img src = 'examples/results/people_udnie.jpg' height = '200px'>
 <a href = 'examples/style/udnie.jpg'><img src = 'examples/thumbs/udnie.jpg' height = '200px'></a>
 <br>
 <a href = 'examples/style/rain_princess.jpg'><img src = 'examples/thumbs/rain_princess.jpg' height = '200px'></a>
-<img src = 'examples/results/chicago_rain_princess.jpg' height = '200px'>
-<img src = 'examples/results/chicago_la_muse.jpg' height = '200px'>
+<img src = 'examples/results/people_rain_princess.jpg' height = '200px'>
+<img src = 'examples/results/people_la_muse.jpg' height = '200px'>
 <a href = 'examples/style/la_muse.jpg'><img src = 'examples/thumbs/la_muse.jpg' height = '200px'></a>
 
 <br>
 <a href = 'examples/style/the_shipwreck_of_the_minotaur.jpg'><img src = 'examples/thumbs/the_shipwreck_of_the_minotaur.jpg' height = '200px'></a>
-<img src = 'examples/results/chicago_wreck.jpg' height = '200px'>
-<img src = 'examples/results/chicago_the_scream.jpg' height = '200px'>
+<img src = 'examples/results/people_wreck.jpg' height = '200px'>
+<img src = 'examples/results/people_the_scream.jpg' height = '200px'>
 <a href = 'examples/style/the_scream.jpg'><img src = 'examples/thumbs/the_scream.jpg' height = '200px'></a>
 </div>
 
