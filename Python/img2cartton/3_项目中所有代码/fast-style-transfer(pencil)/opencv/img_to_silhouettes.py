@@ -24,7 +24,7 @@ def cartoonise(picture_name):
 
     """
     raw_img = picture_name
-    out_img = '../result/silhouetters_0.jpg'
+    out_img = './result/silhouetters_0.jpg'
     num_down = 2  # Reduce the number of pixel samples
     num_bilateral = 7  # Define the number of bilateral filters
     img_rgb = cv2.imread(raw_img)  # read img
@@ -55,4 +55,4 @@ def cartoonise(picture_name):
     cv2.imwrite(out_img, img_cartoon)
 
 
-cartoonise('../imgs/0.jpg')
+cartoonise('./imgs/0.jpg')
