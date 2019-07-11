@@ -15,14 +15,18 @@
 
 # Import and configure modules
 import time
+import os
 import tensorflow as tf
 
 import matplotlib.pyplot as plt
 
-# Download images and choose a style image and a content image:
-content_path = './turtle.jpg'
+if not os.path.exists('./result/'):
+    os.mkdir('./result/')
 
-style_path = './kandinsky.jpg'
+# Download images and choose a style image and a content image:
+content_path = './imgs/turtle.jpg'
+
+style_path = './imgs/kandinsky.jpg'
 
 
 # Visualize the input
@@ -84,7 +88,7 @@ def print_top_5():
     x = tf.keras.applications.vgg19.preprocess_input(content_image * 255)
     x = tf.image.resize(x, (224, 224))
     # step 2: Load the pretraining model.
-    model = tf.keras.applications.VGG19(include_top=True, weights=None)
+    model = tf.keras.applications.VGG19(include_top=True, weights='imagenet')
     # step 3: Classify the possible categories of images.
     prediction_probabilities = model(x)
 
@@ -98,7 +102,7 @@ def print_top_5():
 
 
 # Now load a VGG19 without the classification head, and list the layer names
-vgg = tf.keras.applications.VGG19(include_top=False, weights=None)
+vgg = tf.keras.applications.VGG19(include_top=False, weights='imagenet')
 
 
 # Choose intermediate layers from the network to represent the
@@ -129,7 +133,7 @@ def vgg_layers(layer_names):
 
     """
     # Load our model. Load pretrained VGG, trained on imagenet data
-    vgg = tf.keras.applications.VGG19(include_top=False, weights=None)
+    vgg = tf.keras.applications.VGG19(include_top=False, weights='imagenet')
     vgg.trainable = False
 
     outputs = [vgg.get_layer(names).output for names in layer_names]
@@ -284,7 +288,7 @@ def train(epochs, steps_per_epoch):
     end = time.time()
     print("Total time: {:.1f}".format(end - start))
 
-    file_name = 'kadinsky-turtle.png'
+    file_name = './result/kadinsky-turtle.png'
     plt.imsave(file_name, img[0])
 
 

@@ -16,6 +16,13 @@
 import cv2
 import numpy as np
 
+import time
+import os
+
+
+if not os.path.exists('./result/'):
+    os.mkdir('./result/')
+
 
 # plearse d'not use it, because its use very solw.
 def dodge_naive(image, mask):
@@ -99,6 +106,11 @@ def rgb_to_sketch(inputs, outputs):
 
 
 if __name__ == '__main__':
-    src_img = '../imgs/0.jpg'
-    dst_img = '../result/pencil_0.jpg'
+    src_img = './imgs/0.jpg'
+    dst_img = './result/pencil_0.jpg'
+
+    # cal time
+    start = time.time()
     rgb_to_sketch(src_img, dst_img)
+    end = time.time()
+    print(f'Time: {end - start:.5f}s.')
