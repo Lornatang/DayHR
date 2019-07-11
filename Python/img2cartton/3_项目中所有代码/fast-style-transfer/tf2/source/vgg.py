@@ -21,14 +21,14 @@ MEAN_PIXEL = np.array([125.555, 125.555, 125.555])
 
 
 def build(data_to_path, image):
-    """
+    """ Create VGG based neural unit model
 
     Args:
         data_to_path: Data set file path.
         image: input image tensor.
 
     Returns:
-
+        The generated model file.
     """
     layers = (
         'conv1_1', 'relu1_1', 'conv1_2', 'relu1_2', 'pool1',    # Block 1
@@ -51,21 +51,27 @@ def build(data_to_path, image):
     weights = dataset['layers'][0]
 
     model = {}
-
-    for i, layer in enumerate(layers):
+    # Read sequence Numbers and nerve layers sequentially.
+    for index, layer in enumerate(layers):
+        # get current layer name.
         layer_name = layer[:4]
+
         if layer_name == 'conv':
-            kernels, bias = weights[i][0][0][0][0]
+            kernels, bias = weights[index][0][0][0][0]
             # matconvnet: weights are [width, height, in_channels, out_channels]
             # tensorflow: weights are [height, width, in_channels, out_channels]
             # Similar to the deconvolution of TensorFlow.
             kernels = np.transpose(kernels, (1, 0, 2, 3))
             bias = bias.reshape(-1)
             image = _conv_layer(image, kernels, bias)
+
         elif layer_name == 'relu':
-            image = tf.nn.relu(image)
+            # np.maximum(0, image)
+            image = _relu_layer(image)
+
         elif layer_name == 'pool':
             image = _pool_layer(image)
+
         model[layer] = image
 
     assert len(model) == len(layers)
@@ -73,13 +79,29 @@ def build(data_to_path, image):
 
 
 def _conv_layer(inputs, weights, bias):
-    conv = tf.nn.conv2d(inputs, tf.constant(weights), strides=(1, 1, 1, 1),
+    """ Neural convolution
+
+    Args:
+        inputs: Input image tensor.
+        weights: The weight of the nerve layer.
+        bias: The size of the deviation of the nerve layer.
+
+    Returns:
+
+    """
+    conv = tf.nn.conv2d(inputs, tf.constant(weights),
+                        strides=(1, 1, 1, 1),
                         padding='SAME')
     return tf.nn.bias_add(conv, bias)
 
 
+def _relu_layer(inputs):
+    return np.maximum(0, inputs)
+
+
 def _pool_layer(inputs):
-    return tf.nn.max_pool(inputs, ksize=(1, 2, 2, 1), strides=(1, 2, 2, 1),
+    return tf.nn.max_pool(inputs, (1, 2, 2, 1),
+                          strides=(1, 2, 2, 1),
                           padding='SAME')
 
 
